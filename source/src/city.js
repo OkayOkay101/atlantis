@@ -105,14 +105,14 @@ function populate({ type, put, paint, MAP, balRun, gH, hard }) {
 
   // trees and flowers in the city
   // spoke cypress rows: the city's vertical rhythm
-  for (const s of SPOKES) for (let r = 128; r < 640; r += 8.5) for (const sd of [-1, 1]) {
+  for (const s of SPOKES) for (let r = 128; r < 640; r += low ? 17 : 8.5) for (const sd of [-1, 1]) {
     const x = r * cos(s) - sd * 10.6 * sin(s), z = r * sin(s) + sd * 10.6 * cos(s), zn = zoneOf(x, z);
     if (r < 420 ? (zn === 4 || zn === 6) && edgeDist(x, z) > 13 && free(x, z, 1.5) : abs(angd(s, PI / 2)) > 0.1 && coastR(s) - r > 30 && rng() < 0.7) tree('cypress', x, r < 420 ? LAND : gH(x, z), z);
     // planters along the paved edge
     if (r < 420 && (zn === 2 || zn === 4 || zn === 6) && edgeDist(x, z) > 4) { const px = (r + 4.2) * cos(s) - sd * 8.4 * sin(s), pz = (r + 4.2) * sin(s) + sd * 8.4 * cos(s); if (zoneOf(px, pz) === zn && edgeDist(px, pz) > 3) planter(px, LAND, pz, -s); }
   }
   const pick = (x, z) => { const h = rng(), n = fbm(x / 60 + 5, z / 60 + 2, 2); return h < 0.17 ? 'cypress' : h < 0.17 + 0.28 * (1.3 - n) ? 'olive' : h < 0.56 ? 'plane' : h < 0.65 ? 'pine' : 'bloom'; };
-  for (let gx = -420; gx < 420; gx += 6.3) for (let gz = -420; gz < 420; gz += 6.3) {
+  for (let gx = -420; gx < 420; gx += low ? 12.6 : 6.3) for (let gz = -420; gz < 420; gz += low ? 12.6 : 6.3) {
     const x = gx + rr(0, 5.8), z = gz + rr(0, 5.8), zn = zoneOf(x, z);
     if (zn !== 2 && zn !== 4 && zn !== 6) continue;
     const ed = edgeDist(x, z); if (ed < 2.6 || spokeLat(x, z) < 12.5 || !free(x, z, zn === 2 ? 2 : -1.2)) continue;
@@ -120,7 +120,7 @@ function populate({ type, put, paint, MAP, balRun, gH, hard }) {
     const k = pick(x, z); tree(k, x, LAND, z, zn === 2 ? 0.9 : 1, undefined, undefined, zn !== 2); if (zn !== 2) paint(x, z, 1.4, 1, 180, 1.5); else { paint(x, z, 1.2, 0, 0, 0.8); paint(x, z, 1.2, 1, 255, 0.8); shrub(3, x + 0.5, LAND, z + 0.3, 0.6); shrub((rng() * 5) | 0, x - 0.4, LAND, z - 0.5, 0.6); }
   }
   // flower beds: drifts of one kind, thickest by villas and paths
-  for (let gx = -420; gx < 420; gx += 2.5) for (let gz = -420; gz < 420; gz += 2.5) {
+  for (let gx = -420; gx < 420; gx += low ? 5.0 : 2.5) for (let gz = -420; gz < 420; gz += low ? 5.0 : 2.5) {
     const x = gx + rr(0, 2.3), z = gz + rr(0, 2.3), zn = zoneOf(x, z);
     if (zn !== 4 && zn !== 6 && zn !== 2) continue;
     const n = fbm(x / 23 + 9, z / 23 + 1, 3), ed = edgeDist(x, z);
@@ -130,7 +130,8 @@ function populate({ type, put, paint, MAP, balRun, gH, hard }) {
     shrub(floor(fbm(x / 41 + 3, z / 41 + 7, 2) * 9) % 5, x, LAND, z); paint(x, z, 1.3, 1, 255, 1);
   }
   // civic plazas: beds cut into the paving
-  for (let i = 0; i < 2600; i++) {
+  const nCivic = low ? 650 : 2600;
+  for (let i = 0; i < nCivic; i++) {
     const t = rng() * TAU, r = rr(130, 214), x = r * cos(t), z = r * sin(t);
     if (zoneOf(x, z) !== 2 || edgeDist(x, z) < 3.2 || spokeLat(x, z) < 9 || !free(x, z, 1.2) || fbm(x / 19 + 2, z / 19 + 6, 2) < 0.52) continue;
     shrub(floor(fbm(x / 37 + 13, z / 37 + 1, 2) * 9) % 5, x, LAND, z); paint(x, z, 1.5, 0, 0, 1.2); paint(x, z, 1.5, 1, 255, 1.2);
@@ -162,7 +163,7 @@ function populate({ type, put, paint, MAP, balRun, gH, hard }) {
     for (let k = 0; k < 9; k++) { const b = rng() * TAU, q = rr(10, 20), X = x + q * cos(b), Z = z + q * sin(b); tree(k < 3 ? 'cypress' : pick(X, Z), X, gH(X, Z), Z); }
     for (let k = 0; k < 14; k++) { const b = rng() * TAU, q = rr(8.5, 13), X = x + q * cos(b), Z = z + q * sin(b); shrub((rng() * 5) | 0, X, gH(X, Z), Z); }
   }
-  for (let gx = -1000; gx < 1000; gx += 8) for (let gz = -1000; gz < 1000; gz += 8) {
+  for (let gx = -1000; gx < 1000; gx += low ? 16 : 8) for (let gz = -1000; gz < 1000; gz += low ? 16 : 8) {
     const x0 = gx + 4, z0 = gz + 4, r = hypot(x0, z0), t = atan2(z0, x0); if (r < RB.out(t) + 14 || coastR(t) - r < 12 || r > 1050) continue;
     if (spokeLat(x0, z0) < 9 || !free(x0, z0, 6) || riverDist(x0, z0) < 19) continue;
     if (inWood(x0, z0)) { const x = gx + rr(0, 8), z = gz + rr(0, 8); tree(pick(x, z), x, gH(x, z), z, 1.1, undefined, 0.6); } // woods: a closed canopy, crowns may meet
@@ -176,7 +177,7 @@ function populate({ type, put, paint, MAP, balRun, gH, hard }) {
     put(rocks[(rng() * 3) | 0], x, h - 0.2, z, rr(0.8, 4.2), qMul(qYaw(rng() * 6), qAxis(1, 0, 0.3, rr(-0.5, 0.5))), 0xffffffff, rr(0.6, 1.1));
   }
   // forest on the lower mountain slopes, thinning with height
-  for (let gx = -2900; gx < 3100; gx += 15) for (let gz = -3300; gz < -430; gz += 15) {
+  for (let gx = -2900; gx < 3100; gx += low ? 30 : 15) for (let gz = -3300; gz < -430; gz += low ? 30 : 15) {
     const x = gx + rr(0, 15), z = gz + rr(0, 15), r = hypot(x, z); if (r < 700 || northOf(x, z) < 0.25) continue;
     const h = gH(x, z); if (h < 12 || h > 330 + 130 * fbm(x / 300, z / 300, 2)) continue;
     if (abs(gH(x + 8, z) - h) + abs(gH(x, z + 8) - h) > 9 || fbm(x / 210 + 1, z / 210 + 5, 3) < 0.36 + h / 1400 || riverDist(x, z) < 15) continue;
@@ -246,12 +247,12 @@ function populate({ type, put, paint, MAP, balRun, gH, hard }) {
       for (let i = 0, n = 1 + ((rng() * 3) | 0); i < n; i++) { const X = x + rr(-4, 4), Z = z + rr(-4, 4), s = rr(0.5, hill ? 3.2 : 1.9); put(rocks[(rng() * 3) | 0], X, gH(X, Z) - 0.3 * s, Z, s, qMul(qYaw(rng() * 6), qAxis(1, 0, 0.3, rr(-0.4, 0.4))), FIELDSTONE, rr(0.6, 1.1)); }
     }
   };
-  for (let gx = -1160; gx < 1160; gx += 13) for (let gz = -1160; gz < 1160; gz += 13) {
+  for (let gx = -1160; gx < 1160; gx += low ? 26 : 13) for (let gz = -1160; gz < 1160; gz += low ? 26 : 13) {
     const x = gx + rr(0, 13), z = gz + rr(0, 13), r = hypot(x, z), t = atan2(z, x);
     if (r < RB.out(t) + 16 || r > 1160 || coastT(t) - r < 8 || abs(angd(t, PI / 2)) < 45 * DEG || onMap(x, z, 3) > 80 || onMap(x, z, 0) > 80 || spokeLat(x, z) < 7 || riverDist(x, z) < RIV_SHELF || !free(x, z, 2) || gH(x, z) < 2.5) continue;
     wild(x, z, false);
   }
-  for (let gx = -2900; gx < 3100; gx += 16) for (let gz = -3400; gz < -500; gz += 16) {
+  for (let gx = -2900; gx < 3100; gx += low ? 32 : 16) for (let gz = -3400; gz < -500; gz += low ? 32 : 16) {
     const x = gx + rr(0, 16), z = gz + rr(0, 16), r = hypot(x, z); if (r <= 1160 || northOf(x, z) < 0.15 || riverDist(x, z) < RIV_SHELF) continue;
     const h = gH(x, z); if (h < 2.5 || h > 520 || abs(gH(x + 8, z) - h) + abs(gH(x, z + 8) - h) > 11) continue;
     wild(x, z, true);

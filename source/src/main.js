@@ -318,8 +318,8 @@ let W = 0, H = 0, MW = 0, MH = 0, DW = 0, DH = 0, targets = [], hist = null;
 let passG, passG2, passGm, passAO, passVol, bgVol, passPolish, bgPolish, passLight, passLightM, passX1, passX1b, passXm, passWater, passX2, passTAA = [], passPost, bloomPass = [], bloomBG = [];
 let bgLight, bgLightM, bgAO, bgFx, bgFxM, bgTAA = [], bgPost = [], cpA, cpB, cpD, cpDc, cpSize;
 const NB = NBLOOM, FIXW = +QP.get('w') || 0, FIXH = +QP.get('h') || 0;
-const PIXTOP = QL(1e9, 2560 * 1440, 1280 * 720), PIXMIN = mob ? 25e4 : 4e5;
-let pix = +QP.get('pix') || (FIXW ? 1e9 : +SV[1] || (mob && LV > 1 ? 41e4 : 1e9));
+const PIXTOP = QL(1e9, 2560 * 1440, 640 * 360), PIXMIN = mob ? 15e4 : 2e5;
+let pix = +QP.get('pix') || (FIXW ? 1e9 : +SV[1] || (LV > 1 ? 640 * 360 : 1e9));
 // what frame() measures between decisions
 let dynN = 0, dynT = 0, dynMax = 0, dynG = 0, dynGN = 0, dynBad = 0, dynOk = 0, dynWait = 3, dynOn = false;
 // ?slow=N draws every frame N times (simulates a slower GPU)
